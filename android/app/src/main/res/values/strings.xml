@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Tu Hán Ngữ</string>
+    <string name="title_activity_main">Tu Hán Ngữ</string>
+    <string name="package_name">vn.tuhan.ngu</string>
+    <string name="custom_url_scheme">vn.tuhan.ngu</string>
+</resources>

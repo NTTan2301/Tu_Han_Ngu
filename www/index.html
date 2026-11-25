@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Tu Hán Ngữ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&family=Noto+Serif+SC:wght@500;700&family=Ma+Shan+Zheng&display=swap">
+<style>
+/* VOICE everyday learning, calm cultivation-manual feel
+   IDEA a tu tiên cultivation scroll: jade mountain path, cinnabar seal marks progress
+   PICTURE mountain path of the current realm with stage nodes; big hanzi cards
+   COLOUR jade #0f4a3e dominant, white surfaces, cinnabar #d23a2c accent, gold for tu vi
+   TYPE Noto Serif SC for hanzi, Ma Shan Zheng for seal title, Be Vietnam Pro text
+   LAYOUT single phone column ≤600px centred, top status band, bottom hanzi tab bar */
+:root{color-scheme:light dark;--bg:light-dark(#eef3ef,#0a1512);--sf:light-dark(#ffffff,#12221d);--sf2:light-dark(#e2ece6,#1a2e28);--ink:light-dark(#10201b,#e8f0ec);--mute:light-dark(#53665f,#9db2a9);--jade:light-dark(#0f4a3e,#2f8a72);--jade2:light-dark(#cfe3da,#1f4a3f);--red:light-dark(#d23a2c,#ff6a5a);--gold:light-dark(#a87d12,#e0b84a);--line:light-dark(#d3ddd8,#24382f)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 "Be Vietnam Pro",system-ui,sans-serif;overflow-x:clip;padding-bottom:84px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.hz{font-family:"Noto Serif SC","Songti SC",serif;font-weight:700}
+.top{background:var(--jade);color:#fff;padding:calc(14px + env(safe-area-inset-top,0px)) max(16px,4vw) 16px}
+.top .in{max-width:600px;margin:auto;display:flex;align-items:center;gap:12px}
+.seal{width:46px;height:46px;border-radius:8px;background:var(--red);display:grid;place-items:center;font:34px/1 "Ma Shan Zheng",serif;color:#fff;flex:none}
+.brand{flex:1}.brand b{display:block;font-size:20px;line-height:1.1}.brand span{font-size:13px;opacity:.85}
+.pill{background:rgba(255,255,255,.14);border-radius:999px;padding:4px 10px;font-size:13px;white-space:nowrap}
+main{max-width:600px;margin:auto;padding:16px}
+.view{display:none}.view.on{display:block}
+h2{font-size:22px;line-height:1.15;margin:22px 0 10px;letter-spacing:-.01em}
+h2:first-child{margin-top:4px}
+.card{background:var(--sf);border:1px solid var(--line);border-radius:14px;padding:16px}
+.mut{color:var(--mute);font-size:14px}
+.realm{padding:0;overflow:hidden}
+.realm .head{padding:16px 16px 4px;display:flex;justify-content:space-between;align-items:flex-end;gap:10px;flex-wrap:wrap}
+.realm .nm{font-size:30px;font-weight:700;line-height:1.05}
+.realm svg{display:block;width:100%;height:auto}
+.bar{height:10px;background:var(--sf2);border-radius:6px;overflow:hidden}.bar i{display:block;height:100%;background:var(--gold);border-radius:6px;transition:width .4s}
+.realm .foot{padding:4px 16px 16px}
+.task{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.task:last-child{border:0}.task .bar{grid-column:1/-1;height:6px}
+.task.done b{color:var(--jade)}
+.go{background:var(--jade);color:#fff;border:0;border-radius:10px;padding:10px 14px;min-height:44px;font-weight:600}
+.ghost{background:var(--sf2);border:0;border-radius:10px;padding:10px 14px;min-height:44px;font-weight:600}
+.quote .zh{font-size:24px;line-height:1.4}.quote .py{color:var(--mute)}.quote .hv{color:var(--red);font-weight:600}
+.banner{background:light-dark(#fff3e6,#3a2512);border:1px solid var(--gold);border-radius:12px;padding:12px 14px;font-size:14px;margin-bottom:14px;display:none}
+.tones{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tone{text-align:left;background:var(--sf);border:1px solid var(--line);border-radius:14px;padding:12px;min-height:44px}
+.tone svg{width:100%;height:64px;display:block}
+.tone .t{display:flex;justify-content:space-between;align-items:baseline}.tone .t b{font-size:22px}
+.tone p{margin:4px 0 0;font-size:14px;color:var(--mute);line-height:1.4}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--sf);border:1px solid var(--line);border-radius:999px;padding:8px 14px;min-height:44px}
+.chip.on{background:var(--jade);color:#fff;border-color:var(--jade)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px}
+.cell{background:var(--sf);border:1px solid var(--line);border-radius:12px;padding:8px 6px;text-align:center;min-height:44px}
+.cell b{display:block;font-size:22px;line-height:1.2}.cell .hz{font-size:18px}.cell small{display:block;font-size:12px;color:var(--mute);line-height:1.3}
+.cell.hard{border-color:var(--red)}.cell.hard b{color:var(--red)}
+.tips li{margin:0 0 8px}
+.rate{display:flex;align-items:center;gap:12px}.rate input{flex:1;accent-color:var(--jade);height:44px}
+.flash{text-align:center;padding:22px 16px;min-height:360px;display:flex;flex-direction:column;justify-content:center;gap:10px}
+.flash .big{font-size:clamp(64px,22vw,104px);line-height:1.1}
+.flash .py{font-size:22px;color:var(--mute)}.flash .hv{font-size:20px;color:var(--red);font-weight:700}.flash .vn{font-size:19px}
+.grades{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:6px}
+.grades button{border:0;border-radius:10px;min-height:52px;font-weight:700}
+.g0{background:light-dark(#fbe3e0,#4a1f1b)}.g1{background:var(--sf2)}.g2{background:var(--jade);color:#fff}
+.play{width:96px;height:96px;border-radius:50%;border:0;background:var(--red);color:#fff;font-size:15px;font-weight:700;margin:6px auto;display:block;box-shadow:0 6px 0 light-dark(#9b2a20,#a33a30)}
+.play:active{transform:translateY(4px);box-shadow:0 2px 0 light-dark(#9b2a20,#a33a30)}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.opt{background:var(--sf);border:2px solid var(--line);border-radius:12px;min-height:64px;font-size:24px;font-weight:700}
+.opt.ok{border-color:var(--jade);background:var(--jade2)}.opt.no{border-color:var(--red)}
+.fb{min-height:52px;text-align:center;margin-top:12px}
+.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--sf);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
+.tabs button{background:none;border:0;padding:8px 0 10px;min-height:60px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;color:var(--mute)}
+.tabs button .hz{font-size:22px;line-height:1}
+.tabs button.on{color:var(--red)}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .25s;max-width:90vw;text-align:center;z-index:9}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top"><div class="in">
+  <div class="seal">修</div>
+  <div class="brand"><b>Tu Hán Ngữ</b><span id="topRealm">Luyện Khí tầng 1</span></div>
+  <span class="pill" id="topStreak">Chuỗi 0 ngày</span>
+</div></header>
+
+<main>
+<div class="banner" id="voiceBanner">Không nghe thấy tiếng đọc? Trên Android vào <b>Cài đặt → Google Text-to-Speech (Chuyển văn bản thành giọng nói) → Cài đặt giọng nói</b>, tải gói <b>Tiếng Trung (Trung Quốc)</b>, rồi mở lại app.</div>
+
+<section class="view on" id="v-home">
+  <div class="card realm">
+    <div class="head"><div><div class="mut">Cảnh giới hiện tại</div><div class="nm" id="rName">Luyện Khí</div></div><div class="mut" id="rTv">0 tu vi</div></div>
+    <svg id="mount" viewBox="0 0 400 190" aria-label="Đường tu luyện của cảnh giới hiện tại"></svg>
+    <div class="foot"><div class="bar"><i id="rBar" style="width:0"></i></div><div class="mut" id="rNext" style="margin-top:6px"></div></div>
+  </div>
+
+  <h2>Tu luyện hôm nay</h2>
+  <div class="card" id="tasks"></div>
+
+  <h2>Cổ ngữ hôm nay</h2>
+  <div class="card quote" id="quote"></div>
+</section>
+
+<section class="view" id="v-am">
+  <h2>Bốn thanh điệu</h2>
+  <p class="mut">Chạm vào từng thanh để nghe. Đường kẻ cho thấy giọng đi lên hay xuống (5 là cao nhất, 1 là thấp nhất).</p>
+  <div class="tones" id="tones"></div>
+  <h2>Nghe trọn bộ 4 thanh</h2>
+  <div class="chips" id="sets"></div>
+  <div class="card" style="margin-top:10px" id="setShow"><span class="mut">Chọn một âm ở trên để nghe lần lượt thanh 1 → 4.</span></div>
+  <h2>Tốc độ đọc</h2>
+  <div class="card rate"><span class="mut">Chậm</span><input type="range" id="rate" min="0.5" max="1.1" step="0.1" aria-label="Tốc độ đọc"><span class="mut">Nhanh</span></div>
+  <h2>Thanh mẫu (phụ âm đầu)</h2>
+  <p class="mut">Ô viền đỏ là âm người Việt hay đọc sai.</p>
+  <div class="grid" id="inits"></div>
+  <h2>Vận mẫu (vần)</h2>
+  <div class="grid" id="finals"></div>
+  <h2>Mẹo cho người Việt</h2>
+  <div class="card"><ul class="tips" style="margin:0;padding-left:20px">
+    <li><b>Bật hơi:</b> p, t, k, q, ch, c phải bật mạnh luồng hơi (để tờ giấy trước miệng thấy rung). b, d, g, j, zh, z thì không bật hơi.</li>
+    <li><b>Uốn lưỡi:</b> zh, ch, sh, r cong đầu lưỡi lên vòm miệng. z, c, s đặt đầu lưỡi sau răng cửa.</li>
+    <li><b>j, q, x:</b> mặt lưỡi áp vào vòm, môi kéo dẹt như đang cười. Không đọc thành "gi", "ch", "x" của tiếng Việt.</li>
+    <li><b>ü:</b> giữ lưỡi như đọc "i" rồi tròn môi lại. Sau j, q, x, y thì ü viết thành u (ju, qu, xu, yu).</li>
+    <li><b>Biến điệu:</b> hai thanh 3 đứng liền thì thanh đầu đọc thành thanh 2 (你好 nǐ hǎo đọc ní hǎo). 不 bù trước thanh 4 đọc bú (不是 bú shì).</li>
+  </ul></div>
+  <p class="mut" id="micNote">Luyện nói: trong mục Công pháp, mở nghĩa của thẻ rồi bấm "Nói thử", máy sẽ nghe và báo bạn đọc đúng chưa.</p>
+</section>
+
+<section class="view" id="v-the">
+  <h2>Công pháp</h2>
+  <div class="chips" id="decks"></div>
+  <p class="mut" id="deckStat"></p>
+  <div class="card flash" id="flash"></div>
+</section>
+
+<section class="view" id="v-nhi">
+  <h2>Luyện nhĩ lực</h2>
+  <div class="chips" id="modes">
+    <button class="chip on" data-m="tone">Đoán thanh điệu</button>
+    <button class="chip" data-m="pair">Cặp âm dễ nhầm</button>
+  </div>
+  <div class="card" style="margin-top:12px;text-align:center">
+    <p class="mut" id="earQ" style="margin:0 0 6px">Nghe và chọn thanh đúng</p>
+    <button class="play" id="earPlay">Nghe lại</button>
+    <div class="opts" id="earOpts"></div>
+    <div class="fb" id="earFb"></div>
+    <button class="go" id="earNext" style="display:none">Câu tiếp</button>
+    <p class="mut" id="earScore" style="margin:10px 0 0"></p>
+  </div>
+</section>
+</main>
+
+<nav class="tabs" aria-label="Các mục">
+  <button class="on" data-v="home"><span class="hz">修</span>Tu luyện</button>
+  <button data-v="am"><span class="hz">音</span>Phát âm</button>
+  <button data-v="the"><span class="hz">卷</span>Công pháp</button>
+  <button data-v="nhi"><span class="hz">耳</span>Luyện nhĩ</button>
+</nav>
+<div class="toast" id="toast"></div>
+
+<script>
+{
+const HSK1=`爱|ài|Ái|yêu
+八|bā|Bát|số tám
+爸爸|bàba|Bá bá|bố
+杯子|bēizi|Bôi tử|cái cốc
+北京|Běijīng|Bắc Kinh|Bắc Kinh
+本|běn|Bản|quyển (lượng từ cho sách)
+不|bù|Bất|không
+不客气|bú kèqi|Bất khách khí|đừng khách sáo
+菜|cài|Thái|món ăn, rau
+茶|chá|Trà|trà
+吃|chī|Ngật|ăn
+出租车|chūzūchē|Xuất tô xa|xe taxi
+打电话|dǎ diànhuà|Đả điện thoại|gọi điện thoại
+大|dà|Đại|to, lớn
+的|de|Đích|của (trợ từ)
+点|diǎn|Điểm|giờ; điểm
+电脑|diànnǎo|Điện não|máy tính
+电视|diànshì|Điện thị|tivi
+电影|diànyǐng|Điện ảnh|phim
+东西|dōngxi|Đông tây|đồ vật
+都|dōu|Đô|đều
+读|dú|Độc|đọc
+对不起|duìbuqǐ|Đối bất khởi|xin lỗi
+多|duō|Đa|nhiều
+多少|duōshao|Đa thiểu|bao nhiêu
+儿子|érzi|Nhi tử|con trai
+二|èr|Nhị|số hai
+饭店|fàndiàn|Phạn điếm|nhà hàng, khách sạn
+飞机|fēijī|Phi cơ|máy bay
+分钟|fēnzhōng|Phân chung|phút
+高兴|gāoxìng|Cao hứng|vui mừng
+个|gè|Cá|cái (lượng từ chung)
+工作|gōngzuò|Công tác|công việc; làm việc
+狗|gǒu|Cẩu|con chó
+汉语|Hànyǔ|Hán ngữ|tiếng Trung
+好|hǎo|Hảo|tốt, khỏe
+号|hào|Hiệu|ngày (trong tháng); số
+喝|hē|Hát|uống
+和|hé|Hòa|và
+很|hěn|Ngận|rất
+后面|hòumiàn|Hậu diện|phía sau
+回|huí|Hồi|về
+会|huì|Hội|biết (làm); sẽ
+火车站|huǒchēzhàn|Hỏa xa trạm|ga tàu
+几|jǐ|Kỷ|mấy
+家|jiā|Gia|nhà
+叫|jiào|Khiếu|gọi; tên là
+今天|jīntiān|Kim thiên|hôm nay
+九|jiǔ|Cửu|số chín
+开|kāi|Khai|mở; lái (xe)
+看|kàn|Khán|xem, nhìn
+看见|kànjiàn|Khán kiến|nhìn thấy
+块|kuài|Khối|đồng (tiền)
+来|lái|Lai|đến
+老师|lǎoshī|Lão sư|thầy giáo, cô giáo
+了|le|Liễu|rồi (trợ từ)
+冷|lěng|Lãnh|lạnh
+里|lǐ|Lý|bên trong
+零|líng|Linh|số không
+六|liù|Lục|số sáu
+妈妈|māma|Ma ma|mẹ
+吗|ma|Ma|không? (trợ từ hỏi)
+买|mǎi|Mãi|mua
+猫|māo|Miêu|con mèo
+没关系|méi guānxi|Một quan hệ|không sao
+没有|méiyǒu|Một hữu|không có
+米饭|mǐfàn|Mễ phạn|cơm
+明天|míngtiān|Minh thiên|ngày mai
+名字|míngzi|Danh tự|tên
+那|nà|Na|kia, đó
+呢|ne|Ni|thì sao? (trợ từ)
+能|néng|Năng|có thể
+你|nǐ|Nễ|bạn, anh, chị
+年|nián|Niên|năm
+女儿|nǚ'ér|Nữ nhi|con gái
+朋友|péngyou|Bằng hữu|bạn bè
+漂亮|piàoliang|Phiêu lượng|đẹp
+苹果|píngguǒ|Bình quả|quả táo
+七|qī|Thất|số bảy
+钱|qián|Tiền|tiền
+前面|qiánmiàn|Tiền diện|phía trước
+请|qǐng|Thỉnh|mời; xin
+去|qù|Khứ|đi
+热|rè|Nhiệt|nóng
+人|rén|Nhân|người
+认识|rènshi|Nhận thức|quen biết
+三|sān|Tam|số ba
+商店|shāngdiàn|Thương điếm|cửa hàng
+上|shàng|Thượng|trên
+上午|shàngwǔ|Thượng ngọ|buổi sáng
+少|shǎo|Thiểu|ít
+谁|shéi|Thùy|ai
+什么|shénme|Thập ma|cái gì
+十|shí|Thập|số mười
+时候|shíhou|Thời hậu|lúc, khi
+是|shì|Thị|là
+书|shū|Thư|sách
+水|shuǐ|Thủy|nước
+水果|shuǐguǒ|Thủy quả|hoa quả
+睡觉|shuìjiào|Thụy giác|ngủ
+说|shuō|Thuyết|nói
+四|sì|Tứ|số bốn
+岁|suì|Tuế|tuổi
+他|tā|Tha|anh ấy
+她|tā|Tha|cô ấy
+太|tài|Thái|quá
+天气|tiānqì|Thiên khí|thời tiết
+听|tīng|Thính|nghe
+同学|tóngxué|Đồng học|bạn học
+喂|wèi|Uy|alô
+我|wǒ|Ngã|tôi
+我们|wǒmen|Ngã môn|chúng tôi
+五|wǔ|Ngũ|số năm
+喜欢|xǐhuan|Hỉ hoan|thích
+下|xià|Hạ|dưới
+下午|xiàwǔ|Hạ ngọ|buổi chiều
+下雨|xià yǔ|Hạ vũ|mưa
+先生|xiānsheng|Tiên sinh|ông, ngài
+现在|xiànzài|Hiện tại|bây giờ
+想|xiǎng|Tưởng|muốn; nghĩ, nhớ
+小|xiǎo|Tiểu|nhỏ
+小姐|xiǎojiě|Tiểu thư|cô (gọi phụ nữ trẻ)
+些|xiē|Ta|một vài
+写|xiě|Tả|viết
+谢谢|xièxie|Tạ tạ|cảm ơn
+星期|xīngqī|Tinh kỳ|tuần; thứ
+学生|xuésheng|Học sinh|học sinh
+学习|xuéxí|Học tập|học
+学校|xuéxiào|Học hiệu|trường học
+一|yī|Nhất|số một
+衣服|yīfu|Y phục|quần áo
+医生|yīshēng|Y sinh|bác sĩ
+医院|yīyuàn|Y viện|bệnh viện
+椅子|yǐzi|Ỷ tử|cái ghế
+有|yǒu|Hữu|có
+月|yuè|Nguyệt|tháng; mặt trăng
+在|zài|Tại|ở, tại
+再见|zàijiàn|Tái kiến|tạm biệt
+怎么|zěnme|Chẩm ma|thế nào, sao
+怎么样|zěnmeyàng|Chẩm ma dạng|ra sao
+这|zhè|Giá|này
+中国|Zhōngguó|Trung Quốc|Trung Quốc
+中午|zhōngwǔ|Trung ngọ|buổi trưa
+住|zhù|Trú|ở, sống
+桌子|zhuōzi|Trác tử|cái bàn
+字|zì|Tự|chữ
+昨天|zuótiān|Tạc thiên|hôm qua
+坐|zuò|Tọa|ngồi
+做|zuò|Tố|làm`;
+const CONGSO=`公司|gōngsī|Công ty|công ty
+同事|tóngshì|Đồng sự|đồng nghiệp
+老板|lǎobǎn|Lão bản|sếp, ông chủ
+经理|jīnglǐ|Kinh lý|giám đốc, quản lý
+上班|shàngbān|Thượng ban|đi làm
+下班|xiàbān|Hạ ban|tan làm
+加班|jiābān|Gia ban|tăng ca
+请假|qǐngjià|Thỉnh giả|xin nghỉ phép
+开会|kāihuì|Khai hội|họp
+会议|huìyì|Hội nghị|cuộc họp
+邮件|yóujiàn|Bưu kiện|email, thư
+文件|wénjiàn|Văn kiện|tài liệu, file
+项目|xiàngmù|Hạng mục|dự án
+客户|kèhù|Khách hộ|khách hàng
+计划|jìhuà|Kế hoạch|kế hoạch
+完成|wánchéng|Hoàn thành|hoàn thành
+问题|wèntí|Vấn đề|vấn đề, câu hỏi
+合作|hézuò|Hợp tác|hợp tác
+软件|ruǎnjiàn|Nhuyễn kiện|phần mềm
+程序员|chéngxùyuán|Trình tự viên|lập trình viên
+工程师|gōngchéngshī|Công trình sư|kỹ sư
+测试|cèshì|Trắc thí|kiểm thử
+名片|míngpiàn|Danh phiến|danh thiếp
+辛苦了|xīnkǔ le|Tân khổ liễu|vất vả rồi (lời cảm ơn)
+麻烦你了|máfan nǐ le|Ma phiền nễ liễu|làm phiền anh/chị rồi`;
+const TANGKINH=`修炼|xiūliàn|Tu luyện|tu luyện
+境界|jìngjiè|Cảnh giới|cảnh giới
+灵气|língqì|Linh khí|linh khí
+宗门|zōngmén|Tông môn|tông môn
+师父|shīfu|Sư phụ|sư phụ
+弟子|dìzǐ|Đệ tử|đệ tử
+丹药|dānyào|Đan dược|đan dược
+法宝|fǎbǎo|Pháp bảo|pháp bảo
+飞剑|fēijiàn|Phi kiếm|phi kiếm
+渡劫|dùjié|Độ kiếp|vượt thiên kiếp
+筑基|zhùjī|Trúc cơ|xây nền móng (cảnh giới 2)
+金丹|jīndān|Kim đan|kim đan (cảnh giới 3)
+元婴|yuányīng|Nguyên anh|nguyên anh (cảnh giới 4)
+仙人|xiānrén|Tiên nhân|tiên nhân
+道|dào|Đạo|đạo; con đường`;
+const parse=s=>s.trim().split('\n').map(l=>{const[h,p,v,m]=l.split('|');return{h,p,v,m}});
+const DECKS={hsk1:{n:'HSK1',d:parse(HSK1)},cs:{n:'Công sở',d:parse(CONGSO)},tk:{n:'Tàng Kinh Các',d:parse(TANGKINH)}};
+
+const TONE_INFO=[
+ {n:1,ex:'妈',p:'mā',lv:[5,5],vn:'Giống thanh ngang nhưng giọng cao hơn hẳn và giữ đều.'},
+ {n:2,ex:'麻',p:'má',lv:[3,5],vn:'Gần thanh sắc: đi lên từ giữa lên cao.'},
+ {n:3,ex:'马',p:'mǎ',lv:[2,1,4],vn:'Gần thanh hỏi: xuống thấp rồi lên. Trong câu thường chỉ đọc phần xuống.'},
+ {n:4,ex:'骂',p:'mà',lv:[5,1],vn:'Như thanh huyền nhưng rơi mạnh, dứt khoát từ cao xuống.'}];
+const SETS=[['ma','妈麻马骂','mā má mǎ mà'],['ba','八拔把爸','bā bá bǎ bà'],['yi','一姨椅意','yī yí yǐ yì'],['shi','诗十使是','shī shí shǐ shì'],['shu','书熟鼠树','shū shú shǔ shù'],['tang','汤糖躺烫','tāng táng tǎng tàng'],['wen','温文稳问','wēn wén wěn wèn'],['ji','鸡急几记','jī jí jǐ jì'],['wu','屋无五雾','wū wú wǔ wù'],['fei','飞肥匪费','fēi féi fěi fèi']].map(([s,c,p])=>({s,c:[...c],p:p.split(' ')}));
+const PAIRS=[['是','shì','四','sì','sh uốn lưỡi, s đầu lưỡi thẳng'],['吃','chī','七','qī','ch uốn lưỡi, q môi dẹt'],['知','zhī','鸡','jī','zh uốn lưỡi, j mặt lưỡi'],['日','rì','字','zì','r uốn lưỡi, z đầu lưỡi sau răng'],['女','nǚ','努','nǔ','ü tròn môi đọc i, u là u thường'],['绿','lǜ','路','lù','ü khác u'],['西','xī','诗','shī','x môi dẹt, sh uốn lưỡi'],['草','cǎo','炒','chǎo','c thẳng lưỡi, ch uốn lưỡi'],['资','zī','知','zhī','z thẳng lưỡi, zh uốn lưỡi']];
+const INITS=[['b','爸','bà','p không bật hơi'],['p','怕','pà','p bật hơi mạnh'],['m','妈','mā','như m'],['f','发','fā','như ph'],['d','大','dà','như t'],['t','他','tā','th bật hơi'],['n','你','nǐ','như n'],['l','拉','lā','như l'],['g','哥','gē','như c/k'],['k','可','kě','kh bật hơi'],['h','喝','hē','h hơi khàn'],['j','鸡','jī','gần ch, môi dẹt',1],['q','七','qī','ch bật hơi, môi dẹt',1],['x','西','xī','x mặt lưỡi',1],['zh','知','zhī','tr uốn lưỡi',1],['ch','吃','chī','tr uốn + bật hơi',1],['sh','是','shì','s uốn lưỡi',1],['r','日','rì','r uốn nhẹ',1],['z','字','zì','ch đầu lưỡi',1],['c','次','cì','ts bật hơi',1],['s','四','sì','như x']];
+const FINALS=[['a','啊','ā','a'],['o','喔','ō','ô-ua'],['e','饿','è','gần ưa'],['i','一','yī','i'],['u','五','wǔ','u'],['ü','鱼','yú','i tròn môi'],['ai','爱','ài','ai'],['ei','黑','hēi','ây'],['ao','好','hǎo','ao'],['ou','狗','gǒu','âu'],['an','安','ān','an'],['en','很','hěn','ân'],['ang','忙','máng','ang'],['eng','冷','lěng','âng'],['ong','红','hóng','ung'],['er','二','èr','ơ uốn lưỡi']];
+const QUOTES=[
+ ['学而时习之，不亦说乎？','学而时习之，不亦悦乎','Xué ér shí xí zhī, bú yì yuè hū?','Học nhi thời tập chi, bất diệc duyệt hồ?','Học rồi thường xuyên ôn luyện, chẳng phải vui lắm sao?'],
+ ['三人行，必有我师焉。','三人行，必有我师焉','Sān rén xíng, bì yǒu wǒ shī yān.','Tam nhân hành, tất hữu ngã sư yên.','Ba người cùng đi, ắt có người là thầy ta.'],
+ ['己所不欲，勿施于人。','己所不欲，勿施于人','Jǐ suǒ bú yù, wù shī yú rén.','Kỷ sở bất dục, vật thi ư nhân.','Điều mình không muốn, đừng làm cho người khác.'],
+ ['温故而知新。','温故而知新','Wēn gù ér zhī xīn.','Ôn cố nhi tri tân.','Ôn lại cái cũ mà biết thêm cái mới.'],
+ ['知之为知之，不知为不知，是知也。','知之为知之，不知为不知，是知也','Zhī zhī wéi zhī zhī, bù zhī wéi bù zhī, shì zhī yě.','Tri chi vi tri chi, bất tri vi bất tri, thị tri dã.','Biết thì nói là biết, không biết thì nói không biết, thế mới là biết.'],
+ ['学而不思则罔，思而不学则殆。','学而不思则罔，思而不学则殆','Xué ér bù sī zé wǎng, sī ér bù xué zé dài.','Học nhi bất tư tắc võng, tư nhi bất học tắc đãi.','Học mà không suy nghĩ thì mờ mịt, nghĩ mà không học thì nguy.'],
+ ['敏而好学，不耻下问。','敏而好学，不耻下问','Mǐn ér hào xué, bù chǐ xià wèn.','Mẫn nhi hiếu học, bất sỉ hạ vấn.','Nhanh nhạy, ham học, không ngại hỏi người dưới mình.']];
+const REALMS=[['Luyện Khí','练气',9,60],['Trúc Cơ','筑基',3,200],['Kim Đan','金丹',3,400],['Nguyên Anh','元婴',3,800]];
+const SUB3=['sơ kỳ','trung kỳ','hậu kỳ'];
+const INTV=[0,1,2,4,7,15,30,60];
+const DAY=864e5,NEWMAX=10;
+
+const $=id=>document.getElementById(id);
+const today=()=>new Date().toLocaleDateString('sv');
+const yest=()=>new Date(Date.now()-DAY).toLocaleDateString('sv');
+let S;
+try{S=JSON.parse(localStorage.getItem('tuhan')||'null')}catch(e){S=null}
+S=Object.assign({tv:0,streak:0,last:'',rate:0.8,cards:{},day:{}},S||{});
+const save=()=>{try{localStorage.setItem('tuhan',JSON.stringify(S))}catch(e){}};
+const touch=()=>{if(S.day.d!==today())S.day={d:today(),c:0,e:0,t:0,nw:0}};
+touch();
+
+function realm(tv){let rest=tv;for(let r=0;r<REALMS.length;r++){const[n,h,k,c]=REALMS[r];for(let i=0;i<k;i++){if(rest<c||(r===REALMS.length-1&&i===k-1))return{r,i,n,h,k,c,into:Math.min(rest,c),label:n+' '+(k===9?'tầng '+(i+1):SUB3[i])};rest-=c}}}
+function nextLabel(x){if(x.i+1<x.k)return x.n+' '+(x.k===9?'tầng '+(x.i+2):SUB3[x.i+1]);const nr=REALMS[x.r+1];return nr?nr[0]+(nr[2]===9?' tầng 1':' sơ kỳ'):'đỉnh phong'}
+
+let toastT;
+function toast(t){const el=$('toast');el.textContent=t;el.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('on'),2200)}
+
+const CAP=window.Capacitor;
+const NATIVE=!!(CAP&&CAP.isNativePlatform&&CAP.isNativePlatform());
+const plug=n=>NATIVE?(CAP.Plugins&&CAP.Plugins[n])||(CAP.registerPlugin&&CAP.registerPlugin(n)):null;
+const TTS=plug('TextToSpeech'),SR=plug('SpeechRecognition');
+let voices=[],sayRun=0;
+function loadV(){try{voices=speechSynthesis.getVoices().filter(v=>/^zh/i.test(v.lang))}catch(e){}}
+if(!NATIVE&&'speechSynthesis' in window){loadV();try{speechSynthesis.onvoiceschanged=loadV}catch(e){}}
+if(!NATIVE)setTimeout(()=>{if(!('speechSynthesis' in window)||!voices.length)$('voiceBanner').style.display='block'},2000);
+async function sayNative(list){
+  const run=++sayRun;try{await TTS.stop()}catch(e){}
+  for(const t of list){if(run!==sayRun)return;
+    try{await TTS.speak({text:t,lang:'zh-CN',rate:S.rate,pitch:1,volume:1,category:'playback'})}
+    catch(e){$('voiceBanner').style.display='block';toast('Máy chưa có giọng tiếng Trung, xem hướng dẫn ở đầu trang.');return}}
+}
+async function listen(target){
+  if(!SR){toast('Chỉ bản cài đặt mới dùng được micro.');return null}
+  try{const a=await SR.available();if(!a.available){toast('Máy không có nhận dạng giọng nói.');return null}
+    const p=await SR.requestPermissions();if(p.speechRecognition!=='granted'){toast('Cần cho phép dùng micro.');return null}
+    const r=await SR.start({language:'zh-CN',maxResults:5,prompt:'Đọc: '+target,partialResults:false,popup:true});
+    return (r&&r.matches)||[]}catch(e){toast('Chưa nghe rõ, thử lại nhé.');return null}
+}
+function say(list,cancel=true){
+  if(NATIVE&&TTS){sayNative(Array.isArray(list)?list:[list]);return}
+  if(!('speechSynthesis' in window)){toast('Trình duyệt này không hỗ trợ đọc. Hãy mở bằng Chrome.');return}
+  try{if(cancel)speechSynthesis.cancel();
+  const v=voices.find(v=>/zh[-_]CN/i.test(v.lang))||voices[0];
+  (Array.isArray(list)?list:[list]).forEach(t=>{const u=new SpeechSynthesisUtterance(t);u.lang='zh-CN';if(v)u.voice=v;u.rate=S.rate;speechSynthesis.speak(u)})}catch(e){toast('Không đọc được, thử lại nhé.')}
+}
+
+function gain(n,kind){
+  touch();const before=realm(S.tv).label;S.tv+=n;if(kind)S.day[kind]++;
+  if(S.last!==today()){S.streak=S.last===yest()?S.streak+1:1;S.last=today()}
+  save();const after=realm(S.tv).label;if(after!==before)toast('Đột phá! Đạt '+after);renderTop();
+}
+
+function renderTop(){
+  const x=realm(S.tv);const st=(S.last===today()||S.last===yest())?S.streak:0;
+  $('topRealm').textContent=x.label;$('topStreak').textContent='Chuỗi '+st+' ngày';
+  $('rName').textContent=x.label;$('rTv').textContent=S.tv+' tu vi';
+  $('rBar').style.width=(x.into/x.c*100)+'%';
+  $('rNext').textContent=x.into+'/'+x.c+' tu vi để lên '+nextLabel(x);
+  const n=x.k,pts=[];for(let i=0;i<n;i++){const t=n>1?i/(n-1):0;pts.push([70+t*250+(i%2?36:-36)*(n>3?1:0),170-t*130])}
+  $('mount').innerHTML=`<polygon points="0,190 70,90 150,150 250,30 330,120 400,70 400,190" fill="var(--jade2)"/>
+  <polygon points="0,190 50,150 130,175 220,100 300,165 400,125 400,190" fill="var(--jade)" opacity=".85"/>
+  <polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="var(--gold)" stroke-width="3" stroke-dasharray="2 7" stroke-linecap="round"/>
+  ${pts.map((p,i)=>i<x.i?`<circle cx="${p[0]}" cy="${p[1]}" r="8" fill="var(--gold)"/>`:i===x.i?`<circle cx="${p[0]}" cy="${p[1]}" r="13" fill="var(--red)" stroke="#fff" stroke-width="3"/>`:`<circle cx="${p[0]}" cy="${p[1]}" r="7" fill="var(--sf)" stroke="var(--gold)" stroke-width="2"/>`).join('')}
+  <text x="388" y="44" text-anchor="end" font-family="Ma Shan Zheng,serif" font-size="40" fill="var(--red)">${x.h}</text>`;
+  renderTasks();
+}
+
+function renderTasks(){
+  touch();const T=[['c',10,'Ôn 10 thẻ công pháp','the'],['e',10,'Luyện nhĩ 10 câu','nhi'],['t',4,'Nghe 4 thanh điệu','am']];
+  $('tasks').innerHTML=T.map(([k,goal,name,v])=>{const d=Math.min(S.day[k]||0,goal);return`<div class="task ${d>=goal?'done':''}"><div><b>${name}</b><div class="mut">${d}/${goal}${d>=goal?', đã xong':''}</div></div><button class="go" data-go="${v}">${d>=goal?'Luyện thêm':'Bắt đầu'}</button><div class="bar"><i style="width:${d/goal*100}%"></i></div></div>`}).join('');
+}
+
+function renderQuote(){
+  const d=new Date(),doy=Math.floor((d-new Date(d.getFullYear(),0,0))/DAY);const q=QUOTES[doy%QUOTES.length];
+  $('quote').innerHTML=`<div class="zh hz">${q[0]}</div><div class="py">${q[2]}</div><div class="hv">${q[3]}</div><div>${q[4]}</div><p class="mut" style="margin:8px 0 0">Luận Ngữ, Khổng Tử</p><button class="ghost" id="qPlay" style="margin-top:10px">Nghe câu này</button>`;
+  $('qPlay').onclick=()=>say(q[1]);
+}
+
+/* Phát âm */
+function contour(lv){const X=lv.length===2?[10,90]:[10,45,90];const y=l=>58-(l-1)*12.5;
+  const grid=[1,2,3,4,5].map(l=>`<line x1="0" x2="100" y1="${y(l)}" y2="${y(l)}" stroke="var(--line)" stroke-width="1"/>`).join('');
+  const d=lv.length===2?`M${X[0]} ${y(lv[0])} L${X[1]} ${y(lv[1])}`:`M${X[0]} ${y(lv[0])} Q${X[1]} ${y(lv[1])+14} ${X[2]} ${y(lv[2])}`;
+  return`<svg viewBox="0 0 100 64" preserveAspectRatio="none">${grid}<path d="${d}" fill="none" stroke="var(--red)" stroke-width="4" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>`}
+$('tones').innerHTML=TONE_INFO.map((t,i)=>`<button class="tone" data-t="${i}">${contour(t.lv)}<div class="t"><span>Thanh ${t.n} <span class="mut">(${t.lv.join('')})</span></span><b><span class="hz">${t.ex}</span> ${t.p}</b></div><p>${t.vn}</p></button>`).join('');
+$('tones').onclick=e=>{const b=e.target.closest('.tone');if(!b)return;const t=TONE_INFO[b.dataset.t];say(t.ex);touch();if(S.day.t<4)gain(1,'t')};
+$('sets').innerHTML=SETS.map((s,i)=>`<button class="chip" data-s="${i}">${s.s}</button>`).join('');
+$('sets').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;document.querySelectorAll('#sets .chip').forEach(c=>c.classList.toggle('on',c===b));const s=SETS[b.dataset.s];
+  $('setShow').innerHTML=`<div class="grid">${s.c.map((c,i)=>`<button class="cell" data-c="${c}"><span class="hz" style="font-size:28px">${c}</span><small>${s.p[i]}, thanh ${i+1}</small></button>`).join('')}</div>`;say(s.c)};
+$('setShow').onclick=e=>{const b=e.target.closest('.cell');if(b)say(b.dataset.c)};
+const cells=(a,hard)=>a.map(x=>`<button class="cell ${x[4]?'hard':''}" data-c="${x[1]}"><b>${x[0]}</b><span class="hz">${x[1]}</span> <small>${x[2]}</small><small>${x[3]}</small></button>`).join('');
+$('inits').innerHTML=cells(INITS);$('finals').innerHTML=cells(FINALS);
+['inits','finals'].forEach(id=>$(id).onclick=e=>{const b=e.target.closest('.cell');if(b)say(b.dataset.c)});
+$('rate').value=S.rate;$('rate').oninput=e=>{S.rate=+e.target.value;save()};
+$('rate').onchange=()=>say('你好');
+
+/* Công pháp */
+let deck='hsk1',queue=[],cur=null,shown=false;
+function stats(k){const now=Date.now();let due=0,learned=0,fresh=0;DECKS[k].d.forEach(w=>{const r=S.cards[k+':'+w.h];if(!r)fresh++;else{if(r.due<=now)due++;if(r.b>=3)learned++}});return{due,learned,fresh,total:DECKS[k].d.length}}
+function buildQueue(){touch();const now=Date.now();const d=DECKS[deck].d;const due=d.filter(w=>{const r=S.cards[deck+':'+w.h];return r&&r.due<=now}).sort((a,b)=>S.cards[deck+':'+a.h].due-S.cards[deck+':'+b.h].due);
+  const fresh=d.filter(w=>!S.cards[deck+':'+w.h]).slice(0,Math.max(0,NEWMAX-(S.day.nw||0)));queue=[...due,...fresh];next()}
+function renderDecks(){$('decks').innerHTML=Object.keys(DECKS).map(k=>{const s=stats(k);return`<button class="chip ${k===deck?'on':''}" data-k="${k}">${DECKS[k].n} <span style="opacity:.75">${s.total}</span></button>`}).join('');
+  const s=stats(deck);$('deckStat').textContent=`Đến hạn ${s.due}, chưa học ${s.fresh}, đã thuộc ${s.learned}/${s.total}. Mỗi ngày học tối đa ${NEWMAX} chữ mới.`}
+function next(){shown=false;cur=queue.shift()||null;renderDecks();
+  if(!cur){$('flash').innerHTML=`<div class="big hz" style="color:var(--jade)">圆满</div><b>Hôm nay đã tu luyện xong bộ ${DECKS[deck].n}</b><p class="mut">Thẻ sẽ quay lại đúng ngày cần ôn. Có thể chuyển sang bộ khác hoặc luyện nhĩ.</p>`;return}
+  const isNew=!S.cards[deck+':'+cur.h];
+  $('flash').innerHTML=`<div class="mut">${isNew?'Chữ mới':'Ôn tập'}, còn ${queue.length} thẻ sau thẻ này</div><div class="big hz">${cur.h}</div><div id="back"></div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="ghost" id="fSay">Nghe</button><button class="go" id="fShow">Xem nghĩa</button></div>`;
+  $('fSay').onclick=()=>say(cur.h);$('fShow').onclick=reveal;say(cur.h)}
+function reveal(){if(shown)return;shown=true;$('back').innerHTML=`<div class="py">${cur.p}</div><div class="hv">${cur.v}</div><div class="vn">${cur.m}</div>${SR?'<button class="ghost" id="fTalk" style="margin:6px auto 0">Nói thử</button><div class="mut" id="talkFb"></div>':''}<div class="grades"><button class="g0" data-g="0">Quên</button><button class="g1" data-g="1">Nhớ mờ</button><button class="g2" data-g="2">Nhớ</button></div>`;$('fShow').remove();
+  if(SR)$('fTalk').onclick=async()=>{const w=cur,m=await listen(w.h);if(!m||w!==cur)return;const ok=m.some(x=>x.replace(/[\s，。！？,.!?]/g,'').includes(w.h));
+    $('talkFb').innerHTML=ok?'<b style="color:var(--jade)">Chuẩn rồi!</b> Máy nghe đúng '+w.h:'<b style="color:var(--red)">Chưa khớp.</b> Máy nghe thành: '+(m[0]||'(không rõ)');if(ok)gain(2,null)}}
+$('flash').onclick=e=>{const b=e.target.closest('[data-g]');if(!b)return;const g=+b.dataset.g;const id=deck+':'+cur.h;const old=S.cards[id];touch();if(!old)S.day.nw=(S.day.nw||0)+1;
+  const r=old?{...old}:{b:0,due:0};const now=Date.now();
+  if(g===0){r.b=0;r.due=now;queue.push(cur)}else if(g===1){r.b=Math.max(1,r.b);r.due=now+DAY}else{r.b=Math.min(r.b+1,INTV.length-1);r.due=now+INTV[r.b]*DAY}
+  S.cards[id]=r;gain(g+1,'c');next()};
+$('decks').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;deck=b.dataset.k;buildQueue()};
+
+/* Luyện nhĩ */
+let mode='tone',q=null,score=[0,0];
+const rnd=n=>Math.floor(Math.random()*n);
+function newQ(){$('earFb').textContent='';$('earNext').style.display='none';
+  if(mode==='tone'){const s=SETS[rnd(SETS.length)],a=rnd(4);q={say:s.c[a],a,opts:s.p.map((p,i)=>p),chars:s.c,info:`${s.c[a]} ${s.p[a]}, thanh ${a+1}`};$('earQ').textContent='Nghe và chọn thanh đúng'}
+  else{const p=PAIRS[rnd(PAIRS.length)],a=rnd(2);q={say:a?p[2]:p[0],a,opts:[p[1],p[3]],chars:[p[0],p[2]],info:`${a?p[2]+' '+p[3]:p[0]+' '+p[1]}. Mẹo: ${p[4]}`};$('earQ').textContent='Nghe và chọn âm đúng'}
+  $('earOpts').innerHTML=q.opts.map((o,i)=>`<button class="opt" data-i="${i}">${o}</button>`).join('');
+  q.done=false;say(q.say)}
+$('earOpts').onclick=e=>{const b=e.target.closest('.opt');if(!b||q.done)return;q.done=true;const i=+b.dataset.i,ok=i===q.a;
+  document.querySelectorAll('#earOpts .opt').forEach((o,j)=>{o.innerHTML=`<span class="hz">${q.chars[j]}</span> ${q.opts[j]}`;if(j===q.a)o.classList.add('ok');else if(j===i)o.classList.add('no')});
+  score[1]++;if(ok)score[0]++;$('earFb').innerHTML=`<b style="color:${ok?'var(--jade)':'var(--red)'}">${ok?'Chính xác':'Chưa đúng'}</b><div class="mut">${q.info}</div>`;
+  $('earScore').textContent=`Phiên này: đúng ${score[0]}/${score[1]}`;gain(ok?2:0,'e');$('earNext').style.display='inline-block'};
+$('earPlay').onclick=()=>q&&say(q.say);$('earNext').onclick=newQ;
+$('modes').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;mode=b.dataset.m;document.querySelectorAll('#modes .chip').forEach(c=>c.classList.toggle('on',c===b));newQ()};
+
+/* Điều hướng */
+function show(v){document.querySelectorAll('.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+v));document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));window.scrollTo(0,0);
+  if(v==='the'&&!cur)buildQueue();if(v==='nhi'&&!q)newQ();if(v==='home')renderTop()}
+document.querySelector('.tabs').onclick=e=>{const b=e.target.closest('button');if(b)show(b.dataset.v)};
+$('tasks').onclick=e=>{const b=e.target.closest('[data-go]');if(b)show(b.dataset.go)};
+
+renderTop();renderQuote();renderDecks();
+}
+</script>
+</body>
+</html>
