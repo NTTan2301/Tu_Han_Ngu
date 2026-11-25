@@ -88,7 +88,8 @@ h2:first-child{margin-top:4px}
 </div></header>
 
 <main>
-<div class="banner" id="voiceBanner">Không nghe thấy tiếng đọc? Trên Android vào <b>Cài đặt → Google Text-to-Speech (Chuyển văn bản thành giọng nói) → Cài đặt giọng nói</b>, tải gói <b>Tiếng Trung (Trung Quốc)</b>, rồi mở lại app.</div>
+<div class="banner" id="voiceBanner">Không nghe thấy tiếng đọc? Trên Android vào <b>Cài đặt → Google Text-to-Speech (Chuyển văn bản thành giọng nói) → Cài đặt giọng nói</b>, tải gói <b>Tiếng Trung (Trung Quốc)</b>. Đặt <b>Google</b> làm công cụ ưu tiên, rồi tắt hẳn app và mở lại.
+<br><button class="go" id="installVoice" style="display:none;margin-top:10px">Mở trang tải giọng</button></div>
 
 <section class="view on" id="v-home">
   <div class="card realm">
@@ -113,6 +114,7 @@ h2:first-child{margin-top:4px}
   <div class="card" style="margin-top:10px" id="setShow"><span class="mut">Chọn một âm ở trên để nghe lần lượt thanh 1 → 4.</span></div>
   <h2>Tốc độ đọc</h2>
   <div class="card rate"><span class="mut">Chậm</span><input type="range" id="rate" min="0.5" max="1.1" step="0.1" aria-label="Tốc độ đọc"><span class="mut">Nhanh</span></div>
+  <p class="mut" id="voiceInfo"></p>
   <h2>Thanh mẫu (phụ âm đầu)</h2>
   <p class="mut">Ô viền đỏ là âm người Việt hay đọc sai.</p>
   <div class="grid" id="inits"></div>
@@ -401,10 +403,31 @@ let voices=[],sayRun=0;
 function loadV(){try{voices=speechSynthesis.getVoices().filter(v=>/^zh/i.test(v.lang))}catch(e){}}
 if(!NATIVE&&'speechSynthesis' in window){loadV();try{speechSynthesis.onvoiceschanged=loadV}catch(e){}}
 if(!NATIVE)setTimeout(()=>{if(!('speechSynthesis' in window)||!voices.length)$('voiceBanner').style.display='block'},2000);
+let zhVoice=-1,voiceReady=null;
+function initVoice(){
+  if(voiceReady)return voiceReady;
+  voiceReady=(async()=>{
+    try{const r=await TTS.getSupportedVoices();const vs=(r&&r.voices)||[];
+      const score=v=>{const l=(v.lang||'').toLowerCase(),u=(v.voiceURI||'').toLowerCase();
+        if(!/^(zh|cmn)/.test(l))return -1;let s=1;
+        if(/^(zh|cmn)(-hans)?-cn/.test(l)||/cmn-cn|zh-cn/.test(u))s+=4;
+        if(/tw|hk|yue/.test(l+u))s-=3;
+        if(v.localService)s+=2;
+        if(/network/.test(u))s-=1;return s};
+      let best=-1,bs=-1;vs.forEach((v,i)=>{const s=score(v);if(s>bs){bs=s;best=i}});
+      zhVoice=bs>0?best:-1;
+      $('voiceInfo').textContent=zhVoice>=0?'Đang dùng giọng: '+(vs[zhVoice].name||'')+' ('+vs[zhVoice].voiceURI+')':'Chưa tìm thấy giọng tiếng Trung trên máy ('+vs.length+' giọng khác).';
+    }catch(e){zhVoice=-1;$('voiceInfo').textContent='Không đọc được danh sách giọng của máy.'}
+    if(zhVoice<0){$('voiceBanner').style.display='block';$('installVoice').style.display='inline-block'}
+  })();
+  return voiceReady;
+}
 async function sayNative(list){
   const run=++sayRun;try{await TTS.stop()}catch(e){}
+  await initVoice();
+  if(zhVoice<0){toast('Máy chưa có giọng tiếng Trung, xem hướng dẫn ở đầu trang.');return}
   for(const t of list){if(run!==sayRun)return;
-    try{await TTS.speak({text:t,lang:'zh-CN',rate:S.rate,pitch:1,volume:1,category:'playback'})}
+    try{await TTS.speak({text:t,lang:'zh-CN',voice:zhVoice,rate:S.rate,pitch:1,volume:1,category:'playback'})}
     catch(e){$('voiceBanner').style.display='block';toast('Máy chưa có giọng tiếng Trung, xem hướng dẫn ở đầu trang.');return}}
 }
 async function listen(target){
@@ -422,6 +445,7 @@ function say(list,cancel=true){
   (Array.isArray(list)?list:[list]).forEach(t=>{const u=new SpeechSynthesisUtterance(t);u.lang='zh-CN';if(v)u.voice=v;u.rate=S.rate;speechSynthesis.speak(u)})}catch(e){toast('Không đọc được, thử lại nhé.')}
 }
 
+if(NATIVE&&TTS){initVoice();$('installVoice').onclick=()=>{try{TTS.openInstall().catch(()=>toast('Không mở được, hãy vào Cài đặt của máy.'))}catch(e){}}}
 function gain(n,kind){
   touch();const before=realm(S.tv).label;S.tv+=n;if(kind)S.day[kind]++;
   if(S.last!==today()){S.streak=S.last===yest()?S.streak+1:1;S.last=today()}
